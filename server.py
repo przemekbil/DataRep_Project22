@@ -11,24 +11,22 @@ apikey = config.musicMatch["apiKey"]
 def index():
     return app.send_static_file('project.html')
 
-
+# Return list of artist mathcing the key word
 @app.route('/api/find.artist/<name>', methods=['GET'])
 def searchTrack(name):
 
-    api_call = "{}{}{}{}{}&apikey={}".format(lyrics_api.base_url, lyrics_api.artist_search, lyrics_api.format_url, lyrics_api.p1, name, apikey)
-    print(api_call)
+    musix_api_call = "{}{}{}{}{}&apikey={}".format(lyrics_api.base_url, lyrics_api.artist_search, lyrics_api.format_url, lyrics_api.p1, name, apikey)
 
-    response = requests.get(api_call)
+    response = requests.get(musix_api_call)
     data = response.json()
 
-    output = json.dumps(data, sort_keys=True, indent=2)
+    artists = []
 
-    #for artist in data["message"]["body"]["artist_list"]:
-    #    print("id:{}, {}".format(artist["artist"]["artist_id"], artist["artist"]["artist_name"]))
+    # Build a list of dictionary objects with Artist ID and Artist Name only
+    for artist in data["message"]["body"]["artist_list"]:
+        artists.append({"id":artist["artist"]["artist_id"], "Artist Name":artist["artist"]["artist_name"]})
 
-
-    #return app.send_static_file('searchTrack.html')
-    return output
+    return jsonify(artists)
 
 if __name__=="__main__":
     app.run(debug=True)
