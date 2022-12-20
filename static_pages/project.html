@@ -37,7 +37,7 @@
                             var div = document.createElement('div');
                             div.setAttribute('class', 'artist');
                             div.setAttribute('id', artist.artist_id);
-                            div.innerHTML = artist.artist_Name;
+                            div.innerHTML = artist.artist_name;
                             div.addEventListener('click', async (event)=>{
                                 $.ajax(
                                     {
@@ -46,8 +46,27 @@
                                         "data":"",
                                         "dataType": "JSON",
                                         "contentType": "application/json; charset=utf-8",
-                                        "success":function(result){
-                                            console.log(result)
+                                        "success":function(result2){
+                                            var thisArtistDiv = document.getElementById(artist.artist_id)
+                                            
+                                            //reset parent artist div to prevent albums being added multiple times
+                                            thisArtistDiv.innerHTML=artist.artist_name;
+                                            thisArtistDiv.setAttribute('class', 'artist_opened');
+                                        
+                                            //thisArtistDiv.removeEventListener('click', );
+
+                                            for (const album of result2){
+                                                var album_div = document.createElement('div');
+                                                album_div.setAttribute('class', 'album');
+                                                album_div.setAttribute('id', album.album_id);
+                                                album_div.innerHTML = `${album.album_name}, ${album.album_release_date}, ${album.album_label}`;
+                                                thisArtistDiv.appendChild(album_div);
+                                            }
+
+                                            // recreate Clicked artist node to remove the 'click' listener
+                                            newArtistDiv = thisArtistDiv.cloneNode(true);   
+                                            searchResults.replaceChild(newArtistDiv, thisArtistDiv);                                            
+                                            //console.log(result)
                                         },
                                         "error":function(xhr, status, error){
                                             console.log("error: "+status+" msg: "+ error);

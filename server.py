@@ -15,7 +15,14 @@ def index():
 @app.route('/api/mm/show.artist.albums/<artist_id>', methods=['GET'])
 def findAlbum(artist_id):
 
-    musix_api_call = "{}{}{}{}{}&apikey={}".format(lyrics_api.base_url, lyrics_api.artist_album_getter, lyrics_api.format_url, lyrics_api.p4, artist_id, apikey)
+    musix_api_call = "{}{}{}{}{}{}50&apikey={}".format(
+        lyrics_api.base_url, 
+        lyrics_api.artist_album_getter, 
+        lyrics_api.format_url, 
+        lyrics_api.p4, 
+        artist_id,
+        lyrics_api.p9,
+        apikey)
 
     response = requests.get(musix_api_call)
     data = response.json()
@@ -34,9 +41,17 @@ def findAlbum(artist_id):
 
 # Return list of artist matching the key word
 @app.route('/api/mm/find.artist/<name>', methods=['GET'])
-def searchTrack(name):
+def findArtist(name):
 
-    musix_api_call = "{}{}{}{}{}&apikey={}".format(lyrics_api.base_url, lyrics_api.artist_search, lyrics_api.format_url, lyrics_api.p1, name, apikey)
+    musix_api_call = "{}{}{}{}{}{}50&apikey={}".format(
+        lyrics_api.base_url, 
+        lyrics_api.artist_search, 
+        lyrics_api.format_url, 
+        lyrics_api.p1, 
+        name, 
+        lyrics_api.p9,
+        apikey
+    )
 
     response = requests.get(musix_api_call)
     data = response.json()
@@ -47,7 +62,7 @@ def searchTrack(name):
     for artist in data["message"]["body"]["artist_list"]:
         artists.append({
             "artist_id":artist["artist"]["artist_id"],
-            "artist_Name":artist["artist"]["artist_name"]
+            "artist_name":artist["artist"]["artist_name"]
             })
 
     return jsonify(artists)

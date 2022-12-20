@@ -7,6 +7,15 @@ body{
     color: blue;
 }
 
+.artist_opened{
+    color:blueviolet;
+}
+
+.album{
+    color:brown;
+    margin-left: 30px;
+}
+
 .artist:hover{
     text-decoration: underline;
     cursor: pointer;
