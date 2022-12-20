@@ -11,7 +11,7 @@
         <form id="search_artist">
           <label for="query">Search:</label>
           <input type="text" id="query" name="query">
-          <button type="submit">Go</button>
+          <button type="submit">Search</button>
         </form>
         <div id="search_results"></div>        
         <script>      
@@ -29,14 +29,18 @@
                     "dataType": "JSON",
                     "contentType": "application/json; charset=utf-8",
                     "success":function(result){   
-                        console.log(result)                         
+                        //console.log(result)                         
                         const searchResults = document.getElementById('search_results');
-                        searchResults.innerHTML = 'Artists found:';
+                        searchResults.innerHTML = 'Artists matching your query:';
+                        // loop over results to list each artist found
                         for (const artist of result) {
-                            const li = document.createElement('li');
-                            li.innerHTML = `${artist.artist_Name}, ${artist.artist_id}`;
-                            searchResults.appendChild(li);
+                            var div = document.createElement('div');
+                            div.setAttribute('class', 'artist');
+                            div.setAttribute('id', artist.artist_id);
+                            div.innerHTML = `<a href=api/mm/show.artist.albums/${artist.artist_id}> ${artist.artist_Name}</a>`;
+                            searchResults.appendChild(div);
                         }
+
                     },
                     "error":function(xhr, status, error){
                         console.log("error: "+status+" msg: "+ error);
