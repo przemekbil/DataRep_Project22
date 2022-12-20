@@ -11,8 +11,29 @@ apikey = config.musicMatch["apiKey"]
 def index():
     return app.send_static_file('project.html')
 
+
+@app.route('/api/mm/show.artist.albums/<artist_id>', methods=['GET'])
+def findAlbum(artist_id):
+
+    musix_api_call = "{}{}{}{}{}&apikey={}".format(lyrics_api.base_url, lyrics_api.artist_album_getter, lyrics_api.format_url, lyrics_api.p4, artist_id, apikey)
+
+    response = requests.get(musix_api_call)
+    data = response.json()
+
+    albums =[]
+
+    for album in data["message"]["body"]["album_list"]:
+        albums.append({
+            "album_id":album["album"]["album_id"],
+            "album_name":album["album"]["album_name"],
+            "album_release_date": album["album"]["album_release_date"],
+            "album_label": album["album"]["album_label"]
+        })
+    
+    return jsonify(albums)
+
 # Return list of artist mathcing the key word
-@app.route('/api/find.artist/<name>', methods=['GET'])
+@app.route('/api/mm/find.artist/<name>', methods=['GET'])
 def searchTrack(name):
 
     musix_api_call = "{}{}{}{}{}&apikey={}".format(lyrics_api.base_url, lyrics_api.artist_search, lyrics_api.format_url, lyrics_api.p1, name, apikey)
@@ -24,7 +45,10 @@ def searchTrack(name):
 
     # Build a list of dictionary objects with Artist ID and Artist Name only
     for artist in data["message"]["body"]["artist_list"]:
-        artists.append({"id":artist["artist"]["artist_id"], "Artist_Name":artist["artist"]["artist_name"]})
+        artists.append({
+            "id":artist["artist"]["artist_id"],
+            "Artist_Name":artist["artist"]["artist_name"]
+            })
 
     return jsonify(artists)
 
