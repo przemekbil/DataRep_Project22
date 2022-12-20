@@ -24,9 +24,9 @@
         const data = await response.json();
         const searchResults = document.getElementById('search-results');
         searchResults.innerHTML = '';
-        for (const track of data.message.body.track_list) {
+        for (const track of data) {
           const li = document.createElement('li');
-          li.innerHTML = `${track.track.track_name} by ${track.track.artist_name}`;
+          li.innerHTML = `${track.id} by ${track.Artist_Name}`;
           searchResults.appendChild(li);
         }
       });

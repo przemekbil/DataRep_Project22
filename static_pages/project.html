@@ -7,5 +7,30 @@
     </head>
     <body>
         <h1>2022 DATA REPRESENTATION Project</h1>
+        <h1>Search Artist on Musixmatch.com</h1>
+        <form id="search_artist">
+          <label for="query">Search:</label>
+          <input type="text" id="query" name="query">
+          <button type="submit">Go</button>
+        </form>
+        <div id="search_results"></div>        
+        <script>      
+            // Search for artists
+            const form = document.getElementById('search_artist');
+            form.addEventListener('submit', async (event) => {
+              event.preventDefault();
+              const formData = new FormData(form);
+              const query = formData.get('query');
+              const response = await fetch(`/api/find.artist/${query}`);
+              const data = await response.json();
+              const searchResults = document.getElementById('search_results');
+              searchResults.innerHTML = '';
+              for (const track of data) {
+                const li = document.createElement('li');
+                li.innerHTML = `${track.id} by ${track.Artist_Name}`;
+                searchResults.appendChild(li);
+              }
+            });
+          </script>        
     </body>
 </html>

@@ -24,7 +24,7 @@ def searchTrack(name):
 
     # Build a list of dictionary objects with Artist ID and Artist Name only
     for artist in data["message"]["body"]["artist_list"]:
-        artists.append({"id":artist["artist"]["artist_id"], "Artist Name":artist["artist"]["artist_name"]})
+        artists.append({"id":artist["artist"]["artist_id"], "Artist_Name":artist["artist"]["artist_name"]})
 
     return jsonify(artists)
 
