@@ -1,0 +1,13 @@
+body{
+    background-color:lightgrey;
+    margin: 20px;
+}
+
+.artist{
+    color: blue;
+}
+
+.artist:hover{
+    text-decoration: underline;
+    cursor: pointer;
+}

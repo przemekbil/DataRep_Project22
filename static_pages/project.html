@@ -1,9 +1,9 @@
-<html>
+<!DOCTYPE html>
+<html lang="eng">
     <head>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-        <title>
-            Project for 2022 Data Representation course
-        </title>
+        <title>Project for 2022 Data Representation course</title>
+        <link rel="stylesheet" type="text/css" href="css/style.css"/>
     </head>
     <body>
         <h1>2022 DATA REPRESENTATION Project</h1>
@@ -31,15 +31,34 @@
                     "success":function(result){   
                         //console.log(result)                         
                         const searchResults = document.getElementById('search_results');
-                        searchResults.innerHTML = 'Artists matching your query:';
+                        searchResults.innerHTML = 'Artists matching your query: </br>';
                         // loop over results to list each artist found
                         for (const artist of result) {
                             var div = document.createElement('div');
                             div.setAttribute('class', 'artist');
                             div.setAttribute('id', artist.artist_id);
-                            div.innerHTML = `<a href=api/mm/show.artist.albums/${artist.artist_id}> ${artist.artist_Name}</a>`;
-                            searchResults.appendChild(div);
-                        }
+                            div.innerHTML = artist.artist_Name;
+                            div.addEventListener('click', async (event)=>{
+                                $.ajax(
+                                    {
+                                        "url":`api/mm/show.artist.albums/${artist.artist_id}`,
+                                        "method":"GET",
+                                        "data":"",
+                                        "dataType": "JSON",
+                                        "contentType": "application/json; charset=utf-8",
+                                        "success":function(result){
+                                            console.log(result)
+                                        },
+                                        "error":function(xhr, status, error){
+                                            console.log("error: "+status+" msg: "+ error);
+                                        }
+                                    }
+                                )
+                            }
+
+                            )
+                            searchResults.appendChild(div);                            
+                        }//end of for artist loop
 
                     },
                     "error":function(xhr, status, error){
