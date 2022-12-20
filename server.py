@@ -11,7 +11,7 @@ apikey = config.musicMatch["apiKey"]
 def index():
     return app.send_static_file('project.html')
 
-
+# Return list of artists albums 
 @app.route('/api/mm/show.artist.albums/<artist_id>', methods=['GET'])
 def findAlbum(artist_id):
 
@@ -32,7 +32,7 @@ def findAlbum(artist_id):
     
     return jsonify(albums)
 
-# Return list of artist mathcing the key word
+# Return list of artist matching the key word
 @app.route('/api/mm/find.artist/<name>', methods=['GET'])
 def searchTrack(name):
 
@@ -46,8 +46,8 @@ def searchTrack(name):
     # Build a list of dictionary objects with Artist ID and Artist Name only
     for artist in data["message"]["body"]["artist_list"]:
         artists.append({
-            "id":artist["artist"]["artist_id"],
-            "Artist_Name":artist["artist"]["artist_name"]
+            "artist_id":artist["artist"]["artist_id"],
+            "artist_Name":artist["artist"]["artist_name"]
             })
 
     return jsonify(artists)

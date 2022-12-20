@@ -21,16 +21,29 @@
               event.preventDefault();
               const formData = new FormData(form);
               const query = formData.get('query');
-              const response = await fetch(`/api/mm/find.artist/${query}`);
-              const data = await response.json();
-              const searchResults = document.getElementById('search_results');
-              searchResults.innerHTML = '';
-              for (const track of data) {
-                const li = document.createElement('li');
-                li.innerHTML = `${track.Artist_Name}, ${track.id}`;
-                searchResults.appendChild(li);
-              }
-            });
+              $.ajax(
+                {
+                    "url":`api/mm/find.artist/${query}`,
+                    "method":"GET",
+                    "data":"",
+                    "dataType": "JSON",
+                    "contentType": "application/json; charset=utf-8",
+                    "success":function(result){   
+                        console.log(result)                         
+                        const searchResults = document.getElementById('search_results');
+                        searchResults.innerHTML = 'Artists found:';
+                        for (const artist of result) {
+                            const li = document.createElement('li');
+                            li.innerHTML = `${artist.artist_Name}, ${artist.artist_id}`;
+                            searchResults.appendChild(li);
+                        }
+                    },
+                    "error":function(xhr, status, error){
+                        console.log("error: "+status+" msg: "+ error);
+                    }
+                }
+              )
+            });        
           </script>        
     </body>
 </html>
