@@ -21,7 +21,19 @@ def getUsers():
 
 # Display, update or delete selected user
 # If user is deleted, all his/her favorites iwll be deleted too
-@app.route('/api/user/<int:user_id>', methods=['GET', 'PUT', 'DELETE'])
+@app.route('/api/user', methods=['PUT'])
+def new_user():
+    # add new user
+    data = request.get_json(force=True)
+    print("This is what we got from the site: {}".format(data))
+    name = data['name']
+    newId = userDAO.create(name)
+    user = userDAO.findByID(newId)
+    return jsonify(user)    
+
+# Display, update or delete selected user
+# If user is deleted, all his/her favorites iwll be deleted too
+@app.route('/api/user/<int:user_id>', methods=['GET', 'PUT', 'POST', 'DELETE'])
 def api_user(user_id):
 
     user = userDAO.findByID(user_id)
@@ -31,13 +43,15 @@ def api_user(user_id):
     if request.method == 'GET':
         # Return the user
         return jsonify(user)
-    elif request.method == 'PUT':
+    
+    elif request.method == 'POST':
         # Update the user
         data = request.get_json(force=True)
         name = data['name']
         userDAO.update(name, user_id)
         user = userDAO.findByID(user_id)
         return jsonify(user)
+
     elif request.method == 'DELETE':
         # Delet all users favorites first
         favoritesDAO.deleteUserFavorites(user_id)

@@ -7,7 +7,7 @@
     </head>
     <body>
         <h1>2022 DATA REPRESENTATION Project</h1>
-                
+        <!-- DIVs to be switched ON and OFF depending on which information is beong displayed -->                
         <div id="music_search" style="display: none">
             <form id="search_artist">
             <label for="query">Search:</label>
@@ -15,9 +15,17 @@
             <button type="submit">Search</button>
             </form>
         </div>
-        <!-- DIVs to be switched ON and OFF depending on which information is beong displayed -->
+
         <div id="search_results" style="display: none"></div>  
         <div id="registered_users" style="display: inline"></div>
+
+        <div id="add_profile" style="display: none">
+            <form id="add_user_form">
+            <label for="add_user">New profile name:</label>
+            <input type="text" id="add_user" name="add_user">
+            <button type="submit">Add</button>
+            </form>
+        </div>
 
         <script>            
             //function for selecting profiles
@@ -27,6 +35,9 @@
                     document.getElementById("music_search").style.display = "inline"
                     document.getElementById("search_results").style.display = "inline"
                     document.getElementById("registered_users").style.display = "none"
+                }else{
+                    document.getElementById("registered_users").style.display = "none"
+                    document.getElementById("add_profile").style.display = "inline"                                        
                 }
 
             }
@@ -80,6 +91,35 @@
                     }
                 )
             }
+            //add new user/profile
+            const formAdd = document.getElementById('add_user_form');
+
+            formAdd.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                const formData = new FormData(form);
+                const addUser = formData.get('add_user');
+
+                const newUser = {name: addUser}
+                console.log(addUser);
+                /*$.ajax(
+                    {
+                    "url":`api/user`,
+                    "method":"PUT",
+                    "data": JSON.stringify(newUser),
+                    "dataType": "JSON",
+                    "contentType": "application/json; charset=utf-8",
+                    "success": function(response){
+                        console.log("New user added successfully");
+                    },
+                    "error":function(xhr, status, error){
+                        console.log("error: "+status+" msg: "+ error);
+                    }
+                }
+                ) */
+            }
+            )//end of formAdd.addEventListener
+            
             // Search for artists
             const form = document.getElementById('search_artist');
             form.addEventListener('submit', async (event) => {
