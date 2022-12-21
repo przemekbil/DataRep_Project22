@@ -85,6 +85,7 @@ class UserDAO:
 
         self.closeAll()
 
+# This one's simpler, need to be able to add, remove and fetch favorites for selected user
 class FavoritesDAO:
     host = ""
     user= ""
