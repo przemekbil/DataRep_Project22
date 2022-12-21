@@ -27,7 +27,7 @@ class UserDAO:
             database = self.database,
             auth_plugin='mysql_native_password'
         )
-        self.cursor = self.connection.cursor()
+        self.cursor = self.connection.cursor(dictionary=True)
 
         return self.cursor        
 
@@ -109,7 +109,7 @@ class FavoritesDAO:
             database = self.database,
             auth_plugin='mysql_native_password'
         )
-        self.cursor = self.connection.cursor()
+        self.cursor = self.connection.cursor(dictionary=True)
 
         return self.cursor        
 
@@ -139,7 +139,15 @@ class FavoritesDAO:
 
         result = cursor.fetchall()
         self.closeAll()
-        return result     
+        return result
+
+    def deleteUserFavorites(self, user_id):
+        cursor = self.getCursor()  
+        sql = "DELETE FROM favorites WHERE user_id=%s"
+        values = (user_id, )
+        cursor.execute(sql, values)
+        self.connection.commit()
+        self.closeAll()        
         
 
     def delete(self, id):

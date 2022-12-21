@@ -31,13 +31,14 @@ def api_user(user_id):
         return jsonify(user)
     elif request.method == 'PUT':
         # Update the user
-        data = request.get_json()
-        user.name = data['name']
-        userDAO.update(user.name, user.user_id)
-
+        data = request.get_json(force=True)
+        name = data['name']
+        userDAO.update(name, user_id)
         user = userDAO.findByID(user_id)
-        return jsonify({'id': user.user_id, 'name': user.name})
+        return jsonify(user)
     elif request.method == 'DELETE':
+        # Delet all users favorites first
+        favoritesDAO.deleteUserFavorites(user_id)
         # Delete the user
         userDAO.delete(user_id)
         return '', 204

@@ -1,6 +1,12 @@
 from projectDAO import userDAO, favoritesDAO
 
-latestid = userDAO.create('Derek')
+
+result = userDAO.getAll()
+print("Test update and find by id")
+print(type(result))
+print(result)
+
+""" latestid = userDAO.create('Derek')
 
 result = userDAO.findByID(latestid)
 
@@ -40,4 +46,4 @@ print(result)
 
 
 #delete
-userDAO.delete(latestid)
+userDAO.delete(latestid) """
