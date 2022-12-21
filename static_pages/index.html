@@ -27,21 +27,46 @@
             </form>
         </div>
 
+        <div id="edit_profile" style="display: none">
+            <form id="edit_user_form">
+            <label for="edit_user">Edit profile name:</label>
+            <input type="text" id="edit_user" name="edit_user">
+            <input type="text" id="edit_user_id" name="edit_user_id" style="display: none">            
+            <button type="submit">Change</button>
+            </form>
+        </div>        
+
         <script>            
-            //function for selecting profiles
+            //function to show new profile form or search for music
             function selectProfile(user_id){
                 console.log(`Button Pressed: ${user_id}`);
                 if (user_id > 0){
-                    document.getElementById("music_search").style.display = "inline"
-                    document.getElementById("search_results").style.display = "inline"
-                    document.getElementById("registered_users").style.display = "none"
+                    document.getElementById("music_search").style.display = "inline";
+                    document.getElementById("search_results").style.display = "inline";
+                    document.getElementById("registered_users").style.display = "none";
                 }else{
-                    document.getElementById("registered_users").style.display = "none"
-                    document.getElementById("add_profile").style.display = "inline"                                        
+                    document.getElementById("registered_users").style.display = "none";
+                    document.getElementById("add_profile").style.display = "inline";                                        
                 }
-
             }
+
+            function editProfile(user_id, user_name){
+                console.log(`Edit Button Pressed: ${user_id}, ${user_name}`);
+                document.getElementById("edit_profile").style.display = "inline";
+                document.getElementById("registered_users").style.display = "none";
+
+                const name_input =  document.getElementById("edit_user");
+                const id_input =  document.getElementById("edit_user_id");
+
+                name_input.defaultValue = user_name;
+                id_input.defaultValue = user_id;
+            }            
+            // Function onLoad() to be run at the start of the page
             function runOnLoad(){
+                document.getElementById("registered_users").style.display = "inline";
+                document.getElementById("add_profile").style.display = "none";
+                document.getElementById("search_results").style.display = "none";
+                document.getElementById("edit_profile").style.display = "none";
                 $.ajax(
                     {
                         "url":`/api/users`,
@@ -53,23 +78,42 @@
                             var UsersDisplayArea = document.getElementById("registered_users");
                                                                         
                             UsersDisplayArea.innerHTML='<h2>Select your profile</h2> <br> Registered profiles:';
-
+                            
+                            //table to hold the buttons
+                            const table = document.createElement('table');
 
                             for (const user of result){
-                                var user_div = document.createElement('div');
-                                user_div.setAttribute('class', 'user_div');
-                                user_div.setAttribute('id', `div_uid${user.user_id}`);
+                                // Define table with user selection, edit and delete buttons
+                                const row = document.createElement('tr');
+
+                                const cell1 = document.createElement('td');
+                                const cell2 = document.createElement('td');
 
                                 var user_button = document.createElement('button');
                                 user_button.innerHTML = user.name;
                                 user_button.setAttribute('class', 'user_button');
                                 user_button.setAttribute('id', `button_uid${user.user_id}`);
                                 user_button.setAttribute('onclick', `selectProfile(${user.user_id})`);
+
+                                cell1.appendChild(user_button);
+
+                                var edit_button = document.createElement('button');
+                                edit_button.innerHTML = "Edit";
+                                edit_button.setAttribute('class', 'edit_button');
+                                edit_button.setAttribute('id', `edit_button_uid${user.user_id}`);
+                                edit_button.setAttribute('onclick', `editProfile(${user.user_id}, "${user.name}")`);  
                                 
-                                // Add new user div to User Display Area
-                                user_div.appendChild(user_button);
-                                UsersDisplayArea.appendChild(user_div);
+                                cell2.appendChild(edit_button);
+
+                                row.appendChild(cell1);
+                                row.appendChild(cell2);
+
+                                table.appendChild(row);                                
+                                
                             }
+                            // Add table to the user display area
+                            UsersDisplayArea.appendChild(table);
+
                             var user_div = document.createElement('div');
                             user_div.setAttribute('class', 'user_div');
                             user_div.setAttribute('id', `div_uid0`);
@@ -91,9 +135,39 @@
                     }
                 )
             }
-            //add new user/profile
-            const formAdd = document.getElementById('add_user_form');
+            //function to handle editing user/profile name
+            const formEdit = document.getElementById('edit_user_form');
+            formEdit.addEventListener('submit', function(event) {
+                event.preventDefault();
 
+                const formData = new FormData(formEdit);
+                const newName = formData.get('edit_user');
+                const user_id = formData.get('edit_user_id');
+
+                console.log(`newName=${newName}, user_id=${user_id}`);
+
+                $.ajax(
+                    {
+                    "url":`api/user/${user_id}`,
+                    "method":"POST",
+                    "data": JSON.stringify({name: newName}),
+                    "dataType": "JSON",
+                    "contentType": "application/json; charset=utf-8",
+                    "success": function(response){
+                        console.log("User edited successfully");                       
+                        runOnLoad()
+                    },
+                    "error":function(xhr, status, error){
+                        console.log("error: "+status+" msg: "+ error);
+                    }
+                }
+                )
+            }
+            )//end of formEdit.addEventListener            
+
+
+            // function to handle adding new user/profile
+            const formAdd = document.getElementById('add_user_form');
             formAdd.addEventListener('submit', function(event) {
                 event.preventDefault();
 
@@ -110,9 +184,7 @@
                     "dataType": "JSON",
                     "contentType": "application/json; charset=utf-8",
                     "success": function(response){
-                        console.log("New user added successfully");
-                        document.getElementById("registered_users").style.display = "inline"
-                        document.getElementById("add_profile").style.display = "none"                         
+                        console.log("New user added successfully");                       
                         runOnLoad()
                     },
                     "error":function(xhr, status, error){
