@@ -36,6 +36,8 @@ def findAlbum(artist_id):
             "album_release_date": album["album"]["album_release_date"],
             "album_label": album["album"]["album_label"]
         })
+
+    albums.sort(key=lambda d: d["album_release_date"], reverse=True)
     
     return jsonify(albums)
 
