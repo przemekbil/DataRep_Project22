@@ -97,12 +97,12 @@
             formAdd.addEventListener('submit', function(event) {
                 event.preventDefault();
 
-                const formData = new FormData(form);
+                const formData = new FormData(formAdd);
                 const addUser = formData.get('add_user');
 
                 const newUser = {name: addUser}
-                console.log(addUser);
-                /*$.ajax(
+                console.log(newUser);
+                $.ajax(
                     {
                     "url":`api/user`,
                     "method":"PUT",
@@ -111,18 +111,21 @@
                     "contentType": "application/json; charset=utf-8",
                     "success": function(response){
                         console.log("New user added successfully");
+                        document.getElementById("registered_users").style.display = "inline"
+                        document.getElementById("add_profile").style.display = "none"                         
+                        runOnLoad()
                     },
                     "error":function(xhr, status, error){
                         console.log("error: "+status+" msg: "+ error);
                     }
                 }
-                ) */
+                )
             }
             )//end of formAdd.addEventListener
             
             // Search for artists
             const form = document.getElementById('search_artist');
-            form.addEventListener('submit', async (event) => {
+            form.addEventListener('submit', function(event){
               event.preventDefault();
               const formData = new FormData(form);
               const query = formData.get('query');
