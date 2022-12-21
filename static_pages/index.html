@@ -36,11 +36,24 @@
             </form>
         </div>        
 
-        <div id="delete_profile" style="display: none">
-            
-        </div>           
+        <dialog id="delete-dialog">
+            <form method="dialog">
+              <h2>Are you sure you want to delete this record?</h2>
+              <button id="confirm-delete">Yes</button>
+              <button id="cancel-delete">No</button>
+            </form>
+          </dialog>         
 
-        <script>            
+        <script> 
+            const confirmDeleteButton = document.getElementById('confirm-delete');
+            const cancelDeleteButton = document.getElementById('cancel-delete');
+            confirmDeleteButton.addEventListener('click', function() {
+            // Delete the record
+            deleteDialog.close();
+            });
+            cancelDeleteButton.addEventListener('click', function() {
+            deleteDialog.close();
+            });                 
             //function to show new profile form or search for music
             function selectProfile(user_id){
                 console.log(`Button Pressed: ${user_id}`);
@@ -119,9 +132,14 @@
                                 del_button.innerHTML = "Delete";
                                 del_button.setAttribute('class', 'del_button');
                                 del_button.setAttribute('id', `del_button_uid${user.user_id}`);
-                                del_button.setAttribute('onclick', `deleteProfile(${user.user_id}, "${user.name}")`);  
+                                //del_button.setAttribute('onclick', `deleteProfile(${user.user_id}, "${user.name}")`);
+
+                                const deleteDialog = document.getElementById('delete-dialog');
+                                del_button.addEventListener('click', function() {
+                                    deleteDialog.show();
+                                });
                                 
-                                cell2.appendChild(del_button);                                
+                                cell3.appendChild(del_button);                                
 
                                 row.appendChild(cell1);
                                 row.appendChild(cell2);
