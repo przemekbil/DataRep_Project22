@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="eng">
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <title>Project for 2022 Data Representation course</title>
+        <link rel="stylesheet" type="text/css" href="css/style.css"/>
+    </head>
+    <body>
+        <h1>2022 DATA REPRESENTATION Project</h1>
+        <h2>Select your profile</h2>
+<!--         <form id="search_artist">
+          <label for="query">Search:</label>
+          <input type="text" id="query" name="query">
+          <button type="submit">Search</button>
+        </form> -->
+        <div id="registered_users"></div>
+        <script>
+            function runOnLoad(){
+                $.ajax(
+                    {
+                        "url":`/api/users`,
+                        "method":"GET",
+                        "data":"",
+                        "dataType": "JSON",
+                        "contentType": "application/json; charset=utf-8",
+                        "success":function(result){
+                            var UsersDisplayArea = document.getElementById("registered_users");
+                                                                        
+                            UsersDisplayArea.innerHTML='Registered profiles:';
+
+
+                            for (const user of result){
+                                var user_div = document.createElement('div');
+                                user_div.setAttribute('class', 'user_div');
+                                user_div.setAttribute('id', user.user_id);
+                                user_div.innerHTML = `<button type="submit" class="user_button" id=${user.user_id}>${user.name}</button>`;
+                                // Add new user div to User Display Area
+                                UsersDisplayArea.appendChild(user_div);
+                            }
+                            var new_user_div = document.createElement('div');
+                            new_user_div.setAttribute('class', 'user_div');
+                            new_user_div.setAttribute('id', 0);
+                            new_user_div.innerHTML = `<button type="submit" class="user_button" id=0> Add New Profile </button>`;
+                            // Add new user div to User Display Area
+                            UsersDisplayArea.appendChild(new_user_div);                            
+                               
+                            console.log(result)
+                        },
+                        "error":function(xhr, status, error){
+                            console.log("error: "+status+" msg: "+ error);
+                        }
+                    }
+                )
+            }
+            window.addEventListener("load", runOnLoad)
+        </script>        
+    </body>
+</html>

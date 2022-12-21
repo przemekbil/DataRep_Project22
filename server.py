@@ -10,7 +10,7 @@ apikey = config.musicMatch["apiKey"]
 
 @app.route('/', methods=['GET'])
 def index():
-    return app.send_static_file('project.html')
+    return app.send_static_file('index.html')
 
 # Return list of registered profiles
 @app.route('/api/users', methods=['GET'])
@@ -19,9 +19,11 @@ def getUsers():
     users = userDAO.getAll()
     return jsonify(users)
 
-
+# Display, update or delete selected user
+# If user is deleted, all his/her favorites iwll be deleted too
 @app.route('/api/user/<int:user_id>', methods=['GET', 'PUT', 'DELETE'])
 def api_user(user_id):
+
     user = userDAO.findByID(user_id)
 
     if user is None:

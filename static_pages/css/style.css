@@ -20,3 +20,13 @@ body{
     text-decoration: underline;
     cursor: pointer;
 }
+
+.user_div{
+    width: 200px;
+    height: 30px;
+}
+
+.user_button{
+    width: 150px;
+    height: 20px;
+}
