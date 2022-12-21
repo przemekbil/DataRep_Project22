@@ -42,18 +42,9 @@
               <button id="confirm-delete">Yes</button>
               <button id="cancel-delete">No</button>
             </form>
-          </dialog>         
+        </dialog>         
 
-        <script> 
-            const confirmDeleteButton = document.getElementById('confirm-delete');
-            const cancelDeleteButton = document.getElementById('cancel-delete');
-            confirmDeleteButton.addEventListener('click', function() {
-            // Delete the record
-            deleteDialog.close();
-            });
-            cancelDeleteButton.addEventListener('click', function() {
-            deleteDialog.close();
-            });                 
+        <script>                
             //function to show new profile form or search for music
             function selectProfile(user_id){
                 console.log(`Button Pressed: ${user_id}`);
@@ -79,8 +70,39 @@
                 id_input.defaultValue = user_id;
             }        
 
+            const deleteDialog = document.getElementById('delete-dialog'); 
+            const confirmDeleteButton = document.getElementById('confirm-delete');
+            const cancelDeleteButton = document.getElementById('cancel-delete');
+
+
+            cancelDeleteButton.addEventListener('click', function(){
+                deleteDialog.close();
+            });                   
+
             function deleteProfile(user_id, user_name){
+                deleteDialog.show();
+                confirmDeleteButton.setAttribute('onclick', `call_delete(${user_id}, "${user_name}")`);                
+            }
+
+            function call_delete(user_id, user_name){
                 console.log(`Delete Button Pressed: ${user_id}, ${user_name}`);
+                $.ajax(
+                    {
+                    "url":`api/user/${user_id}`,
+                    "method":"DELETE",
+                    "data": "",
+                    "dataType": "JSON",
+                    "contentType": "application/json; charset=utf-8",
+                    "success": function(response){
+                        console.log("User deleted successfully");                       
+                        runOnLoad()
+                    },
+                    "error":function(xhr, status, error){
+                        console.log("error: "+status+" msg: "+ error);
+                    }
+                }
+                )                
+                deleteDialog.close();
             }
 
             // Function onLoad() to be run at the start of the page
@@ -132,12 +154,7 @@
                                 del_button.innerHTML = "Delete";
                                 del_button.setAttribute('class', 'del_button');
                                 del_button.setAttribute('id', `del_button_uid${user.user_id}`);
-                                //del_button.setAttribute('onclick', `deleteProfile(${user.user_id}, "${user.name}")`);
-
-                                const deleteDialog = document.getElementById('delete-dialog');
-                                del_button.addEventListener('click', function() {
-                                    deleteDialog.show();
-                                });
+                                del_button.setAttribute('onclick', `deleteProfile(${user.user_id}, "${user.name}")`);
                                 
                                 cell3.appendChild(del_button);                                
 
