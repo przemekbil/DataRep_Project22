@@ -36,6 +36,10 @@
             </form>
         </div>        
 
+        <div id="delete_profile" style="display: none">
+            
+        </div>           
+
         <script>            
             //function to show new profile form or search for music
             function selectProfile(user_id){
@@ -60,7 +64,12 @@
 
                 name_input.defaultValue = user_name;
                 id_input.defaultValue = user_id;
-            }            
+            }        
+
+            function deleteProfile(user_id, user_name){
+                console.log(`Delete Button Pressed: ${user_id}, ${user_name}`);
+            }
+
             // Function onLoad() to be run at the start of the page
             function runOnLoad(){
                 document.getElementById("registered_users").style.display = "inline";
@@ -88,6 +97,7 @@
 
                                 const cell1 = document.createElement('td');
                                 const cell2 = document.createElement('td');
+                                const cell3 = document.createElement('td');
 
                                 var user_button = document.createElement('button');
                                 user_button.innerHTML = user.name;
@@ -105,8 +115,17 @@
                                 
                                 cell2.appendChild(edit_button);
 
+                                var del_button = document.createElement('button');
+                                del_button.innerHTML = "Delete";
+                                del_button.setAttribute('class', 'del_button');
+                                del_button.setAttribute('id', `del_button_uid${user.user_id}`);
+                                del_button.setAttribute('onclick', `deleteProfile(${user.user_id}, "${user.name}")`);  
+                                
+                                cell2.appendChild(del_button);                                
+
                                 row.appendChild(cell1);
                                 row.appendChild(cell2);
+                                row.appendChild(cell3);
 
                                 table.appendChild(row);                                
                                 
