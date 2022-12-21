@@ -7,16 +7,28 @@
     </head>
     <body>
         <h1>2022 DATA REPRESENTATION Project</h1>
-        <h2>Select your profile</h2>
-<!--         <form id="search_artist">
-          <label for="query">Search:</label>
-          <input type="text" id="query" name="query">
-          <button type="submit">Search</button>
-        </form> -->
-        <div id="registered_users"></div>
-        <script>
+                
+        <div id="music_search" style="display: none">
+            <form id="search_artist">
+            <label for="query">Search:</label>
+            <input type="text" id="query" name="query">
+            <button type="submit">Search</button>
+            </form>
+        </div>
+        <!-- DIVs to be switched ON and OFF depending on which information is beong displayed -->
+        <div id="search_results" style="display: none"></div>  
+        <div id="registered_users" style="display: inline"></div>
+
+        <script>            
+            //function for selecting profiles
             function selectProfile(user_id){
                 console.log(`Button Pressed: ${user_id}`);
+                if (user_id > 0){
+                    document.getElementById("music_search").style.display = "inline"
+                    document.getElementById("search_results").style.display = "inline"
+                    document.getElementById("registered_users").style.display = "none"
+                }
+
             }
             function runOnLoad(){
                 $.ajax(
@@ -29,7 +41,7 @@
                         "success":function(result){
                             var UsersDisplayArea = document.getElementById("registered_users");
                                                                         
-                            UsersDisplayArea.innerHTML='Registered profiles:';
+                            UsersDisplayArea.innerHTML='<h2>Select your profile</h2> <br> Registered profiles:';
 
 
                             for (const user of result){
@@ -68,6 +80,76 @@
                     }
                 )
             }
+            // Search for artists
+            const form = document.getElementById('search_artist');
+            form.addEventListener('submit', async (event) => {
+              event.preventDefault();
+              const formData = new FormData(form);
+              const query = formData.get('query');
+              $.ajax(
+                {
+                    "url":`api/mm/find.artist/${query}`,
+                    "method":"GET",
+                    "data":"",
+                    "dataType": "JSON",
+                    "contentType": "application/json; charset=utf-8",
+                    "success":function(result){   
+                        //console.log(result)                         
+                        const searchResults = document.getElementById('search_results');
+                        searchResults.innerHTML = '<h2>Search Artist on Musixmatch.com</h2> Artists matching your query: </br>';
+                        // loop over results to list each artist found
+                        for (const artist of result) {
+                            var div = document.createElement('div');
+                            div.setAttribute('class', 'artist');
+                            div.setAttribute('id', artist.artist_id);
+                            div.innerHTML = artist.artist_name;
+                            div.addEventListener('click', async (event)=>{
+                                $.ajax(
+                                    {
+                                        "url":`api/mm/show.artist.albums/${artist.artist_id}`,
+                                        "method":"GET",
+                                        "data":"",
+                                        "dataType": "JSON",
+                                        "contentType": "application/json; charset=utf-8",
+                                        "success":function(result2){
+                                            var thisArtistDiv = document.getElementById(artist.artist_id)
+                                            
+                                            //reset parent artist div to prevent albums being added multiple times
+                                            thisArtistDiv.innerHTML=artist.artist_name;
+                                            thisArtistDiv.setAttribute('class', 'artist_opened');                                    
+
+                                            for (const album of result2){
+                                                var album_div = document.createElement('div');
+                                                album_div.setAttribute('class', 'album');
+                                                album_div.setAttribute('id', album.album_id);
+                                                album_div.innerHTML = `${album.album_name}, ${album.album_release_date}, ${album.album_label}`;
+                                                thisArtistDiv.appendChild(album_div);
+                                            }
+
+                                            // recreate Clicked artist node to remove the 'click' listener
+                                            newArtistDiv = thisArtistDiv.cloneNode(true);   
+                                            searchResults.replaceChild(newArtistDiv, thisArtistDiv);                                            
+                                            //console.log(result)
+                                        },
+                                        "error":function(xhr, status, error){
+                                            console.log("error: "+status+" msg: "+ error);
+                                        }
+                                    }
+                                )
+                            }
+
+                            )
+                            searchResults.appendChild(div);                            
+                        }//end of for artist loop
+
+                    },
+                    "error":function(xhr, status, error){
+                        console.log("error: "+status+" msg: "+ error);
+                    }
+                }
+              )
+            });        
+
             window.addEventListener("load", runOnLoad);
         </script>        
     </body>
