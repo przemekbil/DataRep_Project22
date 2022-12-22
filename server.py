@@ -25,11 +25,25 @@ def getUsers():
 def new_user():
     # add new user
     data = request.get_json(force=True)
-    print("This is what we got from the site: {}".format(data))
+    #print("This is what we got from the site: {}".format(data))
     name = data['name']
     newId = userDAO.create(name)
     user = userDAO.findByID(newId)
-    return jsonify(user)    
+    return jsonify(user)
+
+# Display, update or delete selected user
+# If user is deleted, all his/her favorites iwll be deleted too
+@app.route('/api/addfav', methods=['PUT'])
+def add_favorite():
+    # add new user
+    data = request.get_json(force=True)
+    print("This is what we got from the site: {}".format(data))
+    u_id = data['user_id']
+    album_id = data['album_id']
+
+    newId = favoritesDAO.create(u_id, album_id)
+
+    return jsonify({'fav_id':newId})
 
 # Display, update or delete selected user
 # If user is deleted, all his/her favorites iwll be deleted too

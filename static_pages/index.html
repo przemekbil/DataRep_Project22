@@ -82,6 +82,8 @@
         </dialog>         
 
         <script>
+
+            var active_user_id = 0;
             //function to show Artist search dialog
             function showMusicSearch(){
                 document.getElementById("music_search").style.display = "inline";  
@@ -91,6 +93,10 @@
             //function to show new profile form or search for music
             function selectProfile(user_id, user_name){
                 console.log(`Button Pressed: ${user_id}`);
+
+                //active_user_id is a global variable
+                active_user_id = user_id;
+
                 if (user_id > 0){             
                     document.getElementById("user_favorites").style.display = "inline";
                     document.getElementById("registered_users").style.display = "none";
@@ -150,6 +156,26 @@
                 }
                 )                
                 deleteDialog.close();
+            }
+
+            //Function to add album to favorites
+            function addToFavorites(album_id){                
+                $.ajax(
+                    {
+                    "url":`/api/addfav`,
+                    "method":"PUT",
+                    "data": JSON.stringify({user_id:active_user_id, album_id:album_id}),
+                    "dataType": "JSON",
+                    "contentType": "application/json; charset=utf-8",
+                    "success": function(response){
+                        console.log(`Add album nr${album_id} to user id ${active_user_id}`)                       
+                        //runOnLoad()
+                    },
+                    "error":function(xhr, status, error){
+                        console.log("error: "+status+" msg: "+ error);
+                    }
+                }
+                )                
             }
 
             // Function onLoad() to be run at the start of the page
@@ -352,7 +378,7 @@
                                                 add_button.innerHTML = "Add to Favorires";
                                                 add_button.setAttribute('class', 'add_button');
                                                 add_button.setAttribute('id', `add_button_uid${album.album_id}`);
-                                                add_button.setAttribute('onclick', `addFavorite(${album.album_id})`);
+                                                add_button.setAttribute('onclick', `addToFavorites(${album.album_id})`);
                                                 
                                                 cell2.appendChild(add_button);
 
