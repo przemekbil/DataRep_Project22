@@ -16,3 +16,4 @@ mysqlConfig={
 2. Run 'prepareDB.py' script to create a 'project' database and required tables ('user' and 'favorites') on your MySQL server.
 3. Signup on 'https://developer.musixmatch.com/' to get a free apiKey
 4. Add the apiKey to musicMatch Distonary object in 'config.py'
+5. Project hosted on pbil.pythonanywhere.com
