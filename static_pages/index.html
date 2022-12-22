@@ -7,7 +7,47 @@
     </head>
     <body>
         <h1>2022 DATA REPRESENTATION Project</h1>
-        <!-- DIVs to be switched ON and OFF depending on which information is beong displayed -->                
+        <!-- Dinamic DIVs to be switched ON and OFF depending on which information is beong displayed -->
+
+        <!-- DIV to display registered users/profiles -->
+        <div id="registered_users" style="display: inline"></div>
+        <!-- Form to add a new profile -->
+        <div id="add_profile" style="display: none">
+            <form>
+                <button type="reset" onclick="runOnLoad()">Back</button>
+            </form>
+                        
+            <form id="add_user_form">
+            <label for="add_user">New profile name:</label>
+            <input type="text" id="add_user" name="add_user">
+            <button type="submit">Add</button>
+            </form>
+        </div>
+        <!-- Form to change the name of existing profile -->
+        <div id="edit_profile" style="display: none">
+            <form>
+                <button type="reset" onclick="runOnLoad()">Back</button>
+            </form>
+
+            <form id="edit_user_form">
+            <label for="edit_user">Edit profile name:</label>
+            <input type="text" id="edit_user" name="edit_user">
+            <input type="text" id="edit_user_id" name="edit_user_id" style="display: none">            
+            <button type="submit">Change</button>
+            </form>
+        </div>
+
+        <!-- Canvas to display selected user favorite albums  -->
+        <div id="user_favorites" style="display: none">                        
+            <form>
+                <button type="reset" onclick="runOnLoad()">Back</button>
+            </form>
+
+            <h2 id="user_favorites_h2"></h2>
+            <div id="fav_album_list"></div>            
+        </div>
+
+        <!-- Form for searching for artists  -->
         <div id="music_search" style="display: none">
             <form id="search_artist">
             <label for="query">Search:</label>
@@ -15,27 +55,10 @@
             <button type="submit">Search</button>
             </form>
         </div>
+        <!-- DIV to display the artist search results -->
+        <div id="search_results" style="display: none"></div>
 
-        <div id="search_results" style="display: none"></div>  
-        <div id="registered_users" style="display: inline"></div>
-
-        <div id="add_profile" style="display: none">
-            <form id="add_user_form">
-            <label for="add_user">New profile name:</label>
-            <input type="text" id="add_user" name="add_user">
-            <button type="submit">Add</button>
-            </form>
-        </div>
-
-        <div id="edit_profile" style="display: none">
-            <form id="edit_user_form">
-            <label for="edit_user">Edit profile name:</label>
-            <input type="text" id="edit_user" name="edit_user">
-            <input type="text" id="edit_user_id" name="edit_user_id" style="display: none">            
-            <button type="submit">Change</button>
-            </form>
-        </div>        
-
+        <!-- Yes/No dialog for confirming deleting user profile -->
         <dialog id="delete-dialog">
             <form method="dialog">
               <h2>Are you sure you want to delete this record?</h2>
@@ -46,18 +69,23 @@
 
         <script>                
             //function to show new profile form or search for music
-            function selectProfile(user_id){
+            function selectProfile(user_id, user_name){
                 console.log(`Button Pressed: ${user_id}`);
                 if (user_id > 0){
-                    document.getElementById("music_search").style.display = "inline";
-                    document.getElementById("search_results").style.display = "inline";
+                    //document.getElementById("music_search").style.display = "inline";
+                    //document.getElementById("search_results").style.display = "inline";
+                    document.getElementById("user_favorites").style.display = "inline";
                     document.getElementById("registered_users").style.display = "none";
+
+                    const header = document.getElementById("user_favorites_h2");
+                    header.innerHTML= `${user_name}s favorite Albums`;
+
                 }else{
                     document.getElementById("registered_users").style.display = "none";
                     document.getElementById("add_profile").style.display = "inline";                                        
                 }
             }
-
+            // function to show edit_profile div
             function editProfile(user_id, user_name){
                 console.log(`Edit Button Pressed: ${user_id}, ${user_name}`);
                 document.getElementById("edit_profile").style.display = "inline";
@@ -69,11 +97,11 @@
                 name_input.defaultValue = user_name;
                 id_input.defaultValue = user_id;
             }        
-
+            
+            // functions and data structures for deleting profile/user
             const deleteDialog = document.getElementById('delete-dialog'); 
             const confirmDeleteButton = document.getElementById('confirm-delete');
             const cancelDeleteButton = document.getElementById('cancel-delete');
-
 
             cancelDeleteButton.addEventListener('click', function(){
                 deleteDialog.close();
@@ -81,6 +109,7 @@
 
             function deleteProfile(user_id, user_name){
                 deleteDialog.show();
+                //Function added this way, as adding event listner created multiple event listners and function being called many times
                 confirmDeleteButton.setAttribute('onclick', `call_delete(${user_id}, "${user_name}")`);                
             }
 
@@ -111,6 +140,7 @@
                 document.getElementById("add_profile").style.display = "none";
                 document.getElementById("search_results").style.display = "none";
                 document.getElementById("edit_profile").style.display = "none";
+                document.getElementById("user_favorites").style.display = "none";
                 $.ajax(
                     {
                         "url":`/api/users`,
@@ -138,7 +168,7 @@
                                 user_button.innerHTML = user.name;
                                 user_button.setAttribute('class', 'user_button');
                                 user_button.setAttribute('id', `button_uid${user.user_id}`);
-                                user_button.setAttribute('onclick', `selectProfile(${user.user_id})`);
+                                user_button.setAttribute('onclick', `selectProfile(${user.user_id}, "${user.name}")`);
 
                                 cell1.appendChild(user_button);
 
@@ -176,7 +206,7 @@
                             user_button.innerHTML = "Add new Profile";
                             user_button.setAttribute('class', 'user_button');
                             user_button.setAttribute('id', `button_uid0`);
-                            user_button.setAttribute('onclick', `selectProfile(0)`);
+                            user_button.setAttribute('onclick', `selectProfile(0, "")`);
                                 
                             // Add new user div to User Display Area
                             user_div.appendChild(user_button);
