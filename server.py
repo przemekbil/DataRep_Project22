@@ -19,11 +19,9 @@ def getUsers():
     users = userDAO.getAll()
     return jsonify(users)
 
-# Display, update or delete selected user
-# If user is deleted, all his/her favorites iwll be deleted too
+# Add new user
 @app.route('/api/user', methods=['PUT'])
 def new_user():
-    # add new user
     data = request.get_json(force=True)
     #print("This is what we got from the site: {}".format(data))
     name = data['name']
@@ -31,8 +29,7 @@ def new_user():
     user = userDAO.findByID(newId)
     return jsonify(user)
 
-# Display, update or delete selected user
-# If user is deleted, all his/her favorites iwll be deleted too
+# Add new favorite album to user profile
 @app.route('/api/addfav', methods=['PUT'])
 def add_favorite():
     # add new user
@@ -44,6 +41,39 @@ def add_favorite():
     newId = favoritesDAO.create(u_id, album_id)
 
     return jsonify({'fav_id':newId})
+
+# Show user favorites
+@app.route('/api/userfavs/<int:user_id>', methods=['GET'])
+def get_user_favs(user_id):
+    
+    user = userDAO.findByID(user_id)
+
+    # check if user exists
+    if user is None:
+        return 'User not found', 404
+    
+    user_favs = favoritesDAO.getFavoritesByUserID(user_id)    
+
+    for fav in user_favs:
+        musix_api_call = "{}{}{}{}{}&apikey={}".format(
+        lyrics_api.base_url, 
+        lyrics_api.album_getter, 
+        lyrics_api.format_url, 
+        lyrics_api.p5, 
+        fav['album_id'],
+        apikey)
+
+        response = requests.get(musix_api_call)
+        data = response.json()
+
+        fav['album_name'] = data["message"]["body"]["album"]["album_name"]
+        fav["album_release_date"] = data["message"]["body"]["album"]["album_release_date"]
+        fav["artist_name"]= data["message"]["body"]["album"]["artist_name"]
+        fav["album_label"] = data["message"]["body"]["album"]["album_label"]
+
+
+    return jsonify(user_favs)
+
 
 # Display, update or delete selected user
 # If user is deleted, all his/her favorites iwll be deleted too

@@ -52,16 +52,16 @@
             <div id="music_search" style="display: none">
                 <h3>Search Artist on Musixmatch.com</h3> 
                 <form id="search_artist">
-                <label for="query">Search:</label>
+                <label for="query">Search for Artist</label>
                 <input type="text" id="query" name="query">
-                <button type="submit">Search</button>
+                <button type="submit">Go</button>
                 </form>
             </div>
             <!-- DIV to display the artist search results -->
             <div id="search_results" style="display: none"></div>                        
         </div>
 
-        <!-- Form for searching for artists  -->
+        <!-- Form for searching for artists  
         <div id="music_search" style="display: none">
             <form id="search_artist">
             <label for="query">Search for Artist:</label>
@@ -69,8 +69,8 @@
             <button type="submit">Go</button>
             </form>
         </div>
-        <!-- DIV to display the artist search results -->
-        <div id="search_results" style="display: none"></div>
+        DIV to display the artist search results 
+        <div id="search_results" style="display: none"></div> -->
 
         <!-- Yes/No dialog for confirming deleting user profile -->
         <dialog id="delete-dialog">
@@ -185,6 +185,7 @@
                 document.getElementById("search_results").style.display = "none";
                 document.getElementById("edit_profile").style.display = "none";
                 document.getElementById("user_favorites").style.display = "none";
+                document.getElementById("music_search").style.display = "none"
                 $.ajax(
                     {
                         "url":`/api/users`,
