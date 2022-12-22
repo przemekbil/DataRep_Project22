@@ -44,10 +44,11 @@
             </form>
 
             <h2 id="user_favorites_h2"></h2>
-            <form>
-                <button type="button" onclick="showMusicSearch()">Add New favorite Albums</button>
-            </form>            
+          
             <div id="fav_album_list"></div>
+            <form>
+                <button type="button" id="toggle_musixmatch_search_button" onclick="showMusicSearch()">Add New favorite Albums</button>
+            </form>              
             <!-- Form for searching for artists  -->
             <div id="music_search" style="display: none">
                 <h3>Search Artist on Musixmatch.com</h3> 
@@ -75,8 +76,16 @@
             var active_user_id = 0;
             //function to show Artist search dialog
             function showMusicSearch(){
-                document.getElementById("music_search").style.display = "inline";  
-                document.getElementById("search_results").style.display = "inline";
+                
+                if(document.getElementById("music_search").style.display == "inline"){
+                    document.getElementById("music_search").style.display = "none";  
+                    document.getElementById("search_results").style.display = "none";
+                    document.getElementById("toggle_musixmatch_search_button").innerHTML = "Add New favorite Albums"
+                }else{                
+                    document.getElementById("music_search").style.display = "inline";  
+                    document.getElementById("search_results").style.display = "inline";
+                    document.getElementById("toggle_musixmatch_search_button").innerHTML = "Close Musixmatch search"
+                }
             }
             
             //function to show new profile form or search for music
@@ -173,6 +182,9 @@
 
             //Function to display selected user Favorites
             function showSelectedUserFavorites(user_id){
+                var FavoritesDisplayArea = document.getElementById("fav_album_list");
+
+                FavoritesDisplayArea.innerHTML = "Fetching data, please wait";
                 $.ajax(
                     {
                     "url":`/api/userfavs/${user_id}`,
@@ -182,47 +194,71 @@
                     "contentType": "application/json; charset=utf-8",
                     "success": function(result){
 
-                        var FavoritesDisplayArea = document.getElementById("fav_album_list");
                         FavoritesDisplayArea.innerHTML = "";
 
-                        //table to hold the buttons
-                        const table = document.createElement('table');
+                        //Check if selected user has aby albums saved
+                        if(result.length>0){                
+                            //table to hold the buttons
+                            const table = document.createElement('table');
 
-                        for(const fav of result){
-                            const row= document.createElement('tr');
-                            const cell1= document.createElement('td');
-                            const cell2= document.createElement('td');
-                            const cell3= document.createElement('td');
-                            const cell4= document.createElement('td');
-                            const cell5= document.createElement('td');
+                            const header = document.createElement('tr');
+                            const hcell1 = document.createElement('th');
+                            const hcell2 = document.createElement('th');
+                            const hcell3 = document.createElement('th');
+                            const hcell4 = document.createElement('th');
+                            const hcell5 = document.createElement('th');
+
+                            hcell1.innerHTML = "Artist";
+                            hcell2.innerHTML = "Album name";
+                            hcell3.innerHTML = "Label";
+                            hcell4.innerHTML = "Release Date";
+
+                            header.appendChild(hcell1);
+                            header.appendChild(hcell2);
+                            header.appendChild(hcell3);
+                            header.appendChild(hcell4);
+                            header.appendChild(hcell5);
+
+                            table.appendChild(header);
                             
-                            cell1.innerHTML = fav.artist_name;
-                            cell2.innerHTML = fav.album_name;
-                            cell3.innerHTML = fav.album_label;
-                            cell4.innerHTML = fav.album_release_date;
 
-                            var del_button = document.createElement('button');
-                            del_button.innerHTML = "Remove form Favorites";
-                            del_button.setAttribute('class', 'del_button');
-                            del_button.setAttribute('id', `del_button_uid${fav.id}`);
-                            del_button.setAttribute('onclick', `removeFavorite(${fav.id})`);
+                            for(const fav of result){
+                                const row= document.createElement('tr');
+                                const cell1= document.createElement('td');
+                                const cell2= document.createElement('td');
+                                const cell3= document.createElement('td');
+                                const cell4= document.createElement('td');
+                                const cell5= document.createElement('td');
+                                
+                                cell1.innerHTML = fav.artist_name;
+                                cell2.innerHTML = fav.album_name;
+                                cell3.innerHTML = fav.album_label;
+                                cell4.innerHTML = fav.album_release_date;
 
-                            cell5.appendChild(del_button);
+                                var del_button = document.createElement('button');
+                                del_button.innerHTML = "Remove form Favorites";
+                                del_button.setAttribute('class', 'del_button');
+                                del_button.setAttribute('id', `del_button_uid${fav.id}`);
+                                del_button.setAttribute('onclick', `removeFavorite(${fav.id})`);
 
-                            row.appendChild(cell1);
-                            row.appendChild(cell2);
-                            row.appendChild(cell3);
-                            row.appendChild(cell4);
-                            row.appendChild(cell5);
+                                cell5.appendChild(del_button);
 
-                            table.appendChild(row);
+                                row.appendChild(cell1);
+                                row.appendChild(cell2);
+                                row.appendChild(cell3);
+                                row.appendChild(cell4);
+                                row.appendChild(cell5);
 
-                            //console.log(`User Favorites: ${fav.album_label}`)                       
-                        }
+                                table.appendChild(row);
 
-                        FavoritesDisplayArea.appendChild(table);
+                                //console.log(`User Favorites: ${fav.album_label}`)                       
+                            }
+
+                            FavoritesDisplayArea.appendChild(table);
+                    }
                     },
                     "error":function(xhr, status, error){
+                        FavoritesDisplayArea.innerHTML = "";
                         console.log("error: "+status+" msg: "+ error);
                     }
                 }
@@ -231,7 +267,23 @@
 
             //Function to remove Favorite form users list
             function removeFavorite(fav_id){
-                console.log(`We need to remove the following favorite ${fav_id}`)  
+                $.ajax(
+                    {
+                    "url":`/api/fav`,
+                    "method":"DELETE",
+                    "data": JSON.stringify({id:fav_id}),
+                    "dataType": "JSON",
+                    "contentType": "application/json; charset=utf-8",
+                    "success": function(response){
+                        console.log(`Album nr${fav_id} removed from user id ${active_user_id}`)    
+                        //refresh favorites displayed for this user
+                        showSelectedUserFavorites(active_user_id)                   
+                    },
+                    "error":function(xhr, status, error){
+                        console.log("error: "+status+" msg: "+ error);
+                    }
+                }
+                )           
             }            
 
             // Function onLoad() to be run at the start of the page
@@ -425,11 +477,16 @@
                                                 const row = document.createElement('tr');
                                                 const cell1 = document.createElement('td');
                                                 const cell2 = document.createElement('td');
+                                                const cell3 = document.createElement('td');
+                                                const cell4 = document.createElement('td');                                                
 
                                                 //var album_div = document.createElement('div');
-                                                cell1.setAttribute('class', 'album');
-                                                cell1.setAttribute('id', album.album_id);
-                                                cell1.innerHTML = `${album.album_name}, ${album.album_release_date}, ${album.album_label}`;
+                                                row.setAttribute('class', 'album');
+                                                row.setAttribute('id', album.album_id);
+
+                                                cell1.innerHTML = `${album.album_name}`;
+                                                cell2.innerHTML = `${album.album_label}`;
+                                                cell3.innerHTML = `${album.album_release_date}`;
 
                                                 var add_button = document.createElement('button');
                                                 add_button.innerHTML = "Add to Favorires";
@@ -437,10 +494,12 @@
                                                 add_button.setAttribute('id', `add_button_uid${album.album_id}`);
                                                 add_button.setAttribute('onclick', `addToFavorites(${album.album_id})`);
                                                 
-                                                cell2.appendChild(add_button);
+                                                cell4.appendChild(add_button);
 
+                                                row.appendChild(cell4);
+                                                row.appendChild(cell1);      
                                                 row.appendChild(cell2);
-                                                row.appendChild(cell1);                                                
+                                                row.appendChild(cell3);                                                                                            
 
                                                 table.appendChild(row)                                                
                                             }

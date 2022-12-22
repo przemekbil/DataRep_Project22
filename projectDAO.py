@@ -118,16 +118,25 @@ class FavoritesDAO:
         self.cursor.close()       
 
     # Add new user
-    def create(self, user_id, album_id):
+    def create(self, user_id, album_id):        
         cursor = self.getCursor()
-        sql = "INSERT INTO favorites (user_id, album_id) VALUES (%s, %s)"
         values = (user_id, album_id)
+
+        # Make sure this combination of user_id and album_id is not added to favorites tables yet
+        sql = "SELECT * FROM favorites WHERE user_id=%s AND album_id=%s"
         cursor.execute(sql, values)
 
-        self.connection.commit()
-        newid = cursor.lastrowid
-        self.closeAll()
-        return newid               
+        if len(cursor.fetchall())>0:
+            return 0
+        else:
+            sql = "INSERT INTO favorites (user_id, album_id) VALUES (%s, %s)"
+            
+            cursor.execute(sql, values)
+
+            self.connection.commit()
+            newid = cursor.lastrowid
+            self.closeAll()
+            return newid               
 
     # Get user favorites by user_id
     def getFavoritesByUserID(self, user_id):

@@ -34,13 +34,25 @@ def new_user():
 def add_favorite():
     # add new user
     data = request.get_json(force=True)
-    print("This is what we got from the site: {}".format(data))
+    #print("This is what we got from the site: {}".format(data))
     u_id = data['user_id']
     album_id = data['album_id']
 
     newId = favoritesDAO.create(u_id, album_id)
 
     return jsonify({'fav_id':newId})
+
+
+# Remove album form favorites
+@app.route('/api/fav', methods=['DELETE'])
+def rem_favorite():
+    
+    data = request.get_json(force=True)
+    fav_id = data['id']
+
+    favoritesDAO.delete(fav_id)
+
+    return jsonify({'OK': 200})
 
 # Get user favorites
 @app.route('/api/userfavs/<int:user_id>', methods=['GET'])
@@ -56,7 +68,7 @@ def get_user_favs(user_id):
     user_favs = favoritesDAO.getFavoritesByUserID(user_id)    
 
     for fav in user_favs:
-        
+
         # Get the albums details form Musixmatch server
         musix_api_call = "{}{}{}{}{}&apikey={}".format(
         lyrics_api.base_url, 
