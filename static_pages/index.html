@@ -217,12 +217,6 @@
                             const row = document.createElement('tr');
                             const cell1 = document.createElement('td');
 
-
-
-                            //var user_div = document.createElement('div');
-                            //user_div.setAttribute('class', 'user_div');
-                            //user_div.setAttribute('id', `div_uid0`);
-
                             var user_button = document.createElement('button');
                             user_button.innerHTML = "Add new Profile";
                             user_button.setAttribute('class', 'user_button');
@@ -327,7 +321,7 @@
                             div.setAttribute('class', 'artist');
                             div.setAttribute('id', artist.artist_id);
                             div.innerHTML = artist.artist_name;
-                            div.addEventListener('click', async (event)=>{
+                            div.addEventListener('click', function(event){
                                 $.ajax(
                                     {
                                         "url":`api/mm/show.artist.albums/${artist.artist_id}`,
@@ -340,15 +334,34 @@
                                             
                                             //reset parent artist div to prevent albums being added multiple times
                                             thisArtistDiv.innerHTML=artist.artist_name;
-                                            thisArtistDiv.setAttribute('class', 'artist_opened');                                    
+                                            thisArtistDiv.setAttribute('class', 'artist_opened');
+                                            
+                                            const table = document.createElement('table');
 
                                             for (const album of result2){
-                                                var album_div = document.createElement('div');
-                                                album_div.setAttribute('class', 'album');
-                                                album_div.setAttribute('id', album.album_id);
-                                                album_div.innerHTML = `${album.album_name}, ${album.album_release_date}, ${album.album_label}`;
-                                                thisArtistDiv.appendChild(album_div);
+                                                const row = document.createElement('tr');
+                                                const cell1 = document.createElement('td');
+                                                const cell2 = document.createElement('td');
+
+                                                //var album_div = document.createElement('div');
+                                                cell1.setAttribute('class', 'album');
+                                                cell1.setAttribute('id', album.album_id);
+                                                cell1.innerHTML = `${album.album_name}, ${album.album_release_date}, ${album.album_label}`;
+
+                                                var add_button = document.createElement('button');
+                                                add_button.innerHTML = "Add to Favorires";
+                                                add_button.setAttribute('class', 'add_button');
+                                                add_button.setAttribute('id', `add_button_uid${album.album_id}`);
+                                                add_button.setAttribute('onclick', `addFavorite(${album.album_id})`);
+                                                
+                                                cell2.appendChild(add_button);
+
+                                                row.appendChild(cell2);
+                                                row.appendChild(cell1);                                                
+
+                                                table.appendChild(row)                                                
                                             }
+                                            thisArtistDiv.appendChild(table);
 
                                             // recreate Clicked artist node to remove the 'click' listener
                                             newArtistDiv = thisArtistDiv.cloneNode(true);   
