@@ -16,7 +16,7 @@
             <form>
                 <button type="reset" onclick="runOnLoad()">Back</button>
             </form>
-                        
+
             <form id="add_user_form">
             <label for="add_user">New profile name:</label>
             <input type="text" id="add_user" name="add_user">
@@ -44,15 +44,29 @@
             </form>
 
             <h2 id="user_favorites_h2"></h2>
-            <div id="fav_album_list"></div>            
+            <form>
+                <button type="button" onclick="showMusicSearch()">Add New favorite Albums</button>
+            </form>            
+            <div id="fav_album_list"></div>
+            <!-- Form for searching for artists  -->
+            <div id="music_search" style="display: none">
+                <h3>Search Artist on Musixmatch.com</h3> 
+                <form id="search_artist">
+                <label for="query">Search:</label>
+                <input type="text" id="query" name="query">
+                <button type="submit">Search</button>
+                </form>
+            </div>
+            <!-- DIV to display the artist search results -->
+            <div id="search_results" style="display: none"></div>                        
         </div>
 
         <!-- Form for searching for artists  -->
         <div id="music_search" style="display: none">
             <form id="search_artist">
-            <label for="query">Search:</label>
+            <label for="query">Search for Artist:</label>
             <input type="text" id="query" name="query">
-            <button type="submit">Search</button>
+            <button type="submit">Go</button>
             </form>
         </div>
         <!-- DIV to display the artist search results -->
@@ -67,13 +81,17 @@
             </form>
         </dialog>         
 
-        <script>                
+        <script>
+            //function to show Artist search dialog
+            function showMusicSearch(){
+                document.getElementById("music_search").style.display = "inline";  
+                document.getElementById("search_results").style.display = "inline";
+            }
+            
             //function to show new profile form or search for music
             function selectProfile(user_id, user_name){
                 console.log(`Button Pressed: ${user_id}`);
-                if (user_id > 0){
-                    //document.getElementById("music_search").style.display = "inline";
-                    //document.getElementById("search_results").style.display = "inline";
+                if (user_id > 0){             
                     document.getElementById("user_favorites").style.display = "inline";
                     document.getElementById("registered_users").style.display = "none";
 
@@ -86,13 +104,13 @@
                 }
             }
             // function to show edit_profile div
+            const name_input =  document.getElementById("edit_user");
+            const id_input =  document.getElementById("edit_user_id");    
+
             function editProfile(user_id, user_name){
                 console.log(`Edit Button Pressed: ${user_id}, ${user_name}`);
                 document.getElementById("edit_profile").style.display = "inline";
                 document.getElementById("registered_users").style.display = "none";
-
-                const name_input =  document.getElementById("edit_user");
-                const id_input =  document.getElementById("edit_user_id");
 
                 name_input.defaultValue = user_name;
                 id_input.defaultValue = user_id;
@@ -195,12 +213,15 @@
                                 table.appendChild(row);                                
                                 
                             }
-                            // Add table to the user display area
-                            UsersDisplayArea.appendChild(table);
 
-                            var user_div = document.createElement('div');
-                            user_div.setAttribute('class', 'user_div');
-                            user_div.setAttribute('id', `div_uid0`);
+                            const row = document.createElement('tr');
+                            const cell1 = document.createElement('td');
+
+
+
+                            //var user_div = document.createElement('div');
+                            //user_div.setAttribute('class', 'user_div');
+                            //user_div.setAttribute('id', `div_uid0`);
 
                             var user_button = document.createElement('button');
                             user_button.innerHTML = "Add new Profile";
@@ -209,8 +230,12 @@
                             user_button.setAttribute('onclick', `selectProfile(0, "")`);
                                 
                             // Add new user div to User Display Area
-                            user_div.appendChild(user_button);
-                            UsersDisplayArea.appendChild(user_div);                            
+                            cell1.appendChild(user_button);
+                            row.appendChild(cell1); 
+                            table.appendChild(row);                
+                            
+                            // Add table to the user display area
+                            UsersDisplayArea.appendChild(table);                            
 
                         },
                         "error":function(xhr, status, error){
@@ -239,7 +264,7 @@
                     "contentType": "application/json; charset=utf-8",
                     "success": function(response){
                         console.log("User edited successfully");                       
-                        runOnLoad()
+                        runOnLoad();
                     },
                     "error":function(xhr, status, error){
                         console.log("error: "+status+" msg: "+ error);
@@ -295,7 +320,7 @@
                     "success":function(result){   
                         //console.log(result)                         
                         const searchResults = document.getElementById('search_results');
-                        searchResults.innerHTML = '<h2>Search Artist on Musixmatch.com</h2> Artists matching your query: </br>';
+                        searchResults.innerHTML = 'Artists matching your query: </br>';
                         // loop over results to list each artist found
                         for (const artist of result) {
                             var div = document.createElement('div');
