@@ -1,3 +1,7 @@
+# Author: Przemyslaw Bil
+# g00398317@atu.ie
+# Simple Flask server for the Project
+
 from flask import Flask, jsonify, request, abort
 import config, lyrics_api, requests, json
 from projectDAO import userDAO, favoritesDAO

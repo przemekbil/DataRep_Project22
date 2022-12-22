@@ -1,3 +1,5 @@
+# Author: Przemyslaw Bil
+# g00398317@atu.ie
 # Data Access Object class to connect to MySql Db
 # Based on StudentDAO
 

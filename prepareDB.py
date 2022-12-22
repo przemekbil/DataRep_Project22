@@ -1,5 +1,6 @@
-# Data Access Object class to connect to MySql Db
-# Based on StudentDAO
+# Author: Przemyslaw Bil
+# g00398317@atu.ie
+# Script to create MySQL DataBase and tables required for the project
 
 import mysql.connector
 from config import mysqlConfig
