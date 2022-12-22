@@ -42,7 +42,7 @@ def add_favorite():
 
     return jsonify({'fav_id':newId})
 
-# Show user favorites
+# Get user favorites
 @app.route('/api/userfavs/<int:user_id>', methods=['GET'])
 def get_user_favs(user_id):
     
@@ -52,9 +52,12 @@ def get_user_favs(user_id):
     if user is None:
         return 'User not found', 404
     
+
     user_favs = favoritesDAO.getFavoritesByUserID(user_id)    
 
     for fav in user_favs:
+        
+        # Get the albums details form Musixmatch server
         musix_api_call = "{}{}{}{}{}&apikey={}".format(
         lyrics_api.base_url, 
         lyrics_api.album_getter, 
