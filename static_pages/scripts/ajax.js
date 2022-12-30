@@ -217,6 +217,8 @@ function removeFavorite(fav_id){
 
 // Function onLoad() to be run at the start of the page
 function runOnLoad(){
+    document.getElementById("music_search").style.display = "none";  
+    document.getElementById("toggle_musixmatch_search_button").innerHTML = "Add New favorite Albums"        
     document.getElementById("registered_users").style.display = "inline";
     document.getElementById("add_profile").style.display = "none";
     document.getElementById("search_results").style.display = "none";
@@ -233,7 +235,7 @@ function runOnLoad(){
             "success":function(result){
                 var UsersDisplayArea = document.getElementById("registered_users");
                                                             
-                UsersDisplayArea.innerHTML='<h2>Select your profile</h2> <br> Registered profiles:';
+                UsersDisplayArea.innerHTML='<h2>Select your profile</h2> <br> ';
                 
                 //table to hold the buttons
                 const table = document.createElement('table');
