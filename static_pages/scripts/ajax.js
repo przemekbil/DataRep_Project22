@@ -376,17 +376,23 @@ formAdd.addEventListener('submit', function(event) {
 
 // Clear the table with artist albums
 function close_artist(artist_id, artist_name){
-    var artistDiv = document.getElementById(artist_id);
+    var artistcell = document.getElementById(`artist${artist_id}`);
+    var expanderCell = document.getElementById(`expand${artist_id}`);
 
-    artistDiv.setAttribute('class', 'artist');
-    artistDiv.innerHTML = artist_name + "[+]";
-    artistDiv.setAttribute('onclick', `open_artist(${artist_id}, '${artist_name}')`);
+    artistcell.setAttribute('class', 'artist');
+    artistcell.innerHTML = artist_name;    
+    artistcell.setAttribute('onclick', `open_artist(${artist_id}, '${artist_name}')`);
+
+    expanderCell.innerHTML = "[+]";
+    expanderCell.setAttribute('onclick', `open_artist(${artist_id}, '${artist_name}')`);
+
 }
 
 // Populate the table with artist albums
 function open_artist(artist_id, artist_name){
 
-    var thisArtistDiv = document.getElementById(artist_id)
+    var artistcell = document.getElementById(`artist${artist_id}`);
+    var expanderCell = document.getElementById(`expand${artist_id}`);
 
     $.ajax(
         {
@@ -399,9 +405,12 @@ function open_artist(artist_id, artist_name){
 
                 
                 //reset parent artist div to prevent albums being added multiple times
-                thisArtistDiv.innerHTML=artist_name + "[-]";
-                thisArtistDiv.setAttribute('class', 'artist_opened');
-                thisArtistDiv.setAttribute('onclick', `close_artist(${artist_id}, '${artist_name}')`);
+                artistcell.innerHTML=artist_name;
+                artistcell.setAttribute('class', 'artist_opened');
+                artistcell.setAttribute('onclick', `close_artist(${artist_id}, '${artist_name}')`);
+
+                expanderCell.innerHTML = "[-]";
+                expanderCell.setAttribute('onclick', `close_artist(${artist_id}, '${artist_name}')`);                
                 
                 const table = document.createElement('table');
 
@@ -437,12 +446,8 @@ function open_artist(artist_id, artist_name){
 
                     table.appendChild(row)                                                
                 }
-                thisArtistDiv.appendChild(table);
+                artistcell.appendChild(table);
 
-                // recreate Clicked artist node to remove the 'click' listener
-                //newArtistDiv = thisArtistDiv.cloneNode(true);   
-                //searchResults.replaceChild(newArtistDiv, thisArtistDiv);                                            
-                //console.log(result)
             },
             "error":function(xhr, status, error){
                 console.log("error: "+status+" msg: "+ error);
@@ -468,81 +473,32 @@ form.addEventListener('submit', function(event){
             //console.log(result)                         
             const searchResults = document.getElementById('search_results');
             searchResults.innerHTML = 'Artists matching your query: </br>';
+
+            const table = document.createElement('table');
+            table.className = "artist_table";
+
             // loop over results to list each artist found
             for (const artist of result) {
-                var div = document.createElement('div');
-                div.setAttribute('class', 'artist');
-                div.setAttribute('id', artist.artist_id);
-                div.innerHTML = artist.artist_name + "[+]";
-                div.setAttribute('onclick', `close_artist(${artist.artist_id}, '${artist.artist_name}')`);
-                /* div.addEventListener('click', function(event){
-                    $.ajax(
-                        {
-                            "url":`api/mm/show.artist.albums/${artist.artist_id}`,
-                            "method":"GET",
-                            "data":"",
-                            "dataType": "JSON",
-                            "contentType": "application/json; charset=utf-8",
-                            "success":function(result2){
-                                var thisArtistDiv = document.getElementById(artist.artist_id)
-                                
-                                //reset parent artist div to prevent albums being added multiple times
-                                thisArtistDiv.innerHTML=artist.artist_name;
-                                thisArtistDiv.setAttribute('class', 'artist_opened');
+                const row = document.createElement('tr');
+                const cell1 = document.createElement('td');
+                const cell2 = document.createElement('td');
 
-                                thisArtistDiv.setAttribute('onclick', `close_artist(${artist.artist_id}, '${artist.artist_name}')`);
-                                
-                                const table = document.createElement('table');
+                //var div = document.createElement('div');
+                cell1.setAttribute('class', 'artist');
+                cell1.setAttribute('id', `artist${artist.artist_id}`);
+                cell1.innerHTML = artist.artist_name;
+                cell1.setAttribute('onclick', `open_artist(${artist.artist_id}, '${artist.artist_name}')`);
 
-                                table.className = "artist_albums_table";
-
-                                for (const album of result2){
-                                    const row = document.createElement('tr');
-                                    const cell1 = document.createElement('td');
-                                    const cell2 = document.createElement('td');
-                                    const cell3 = document.createElement('td');
-                                    const cell4 = document.createElement('td');                                                
-
-                                    //var album_div = document.createElement('div');
-                                    row.setAttribute('class', 'album');
-                                    row.setAttribute('id', album.album_id);
-
-                                    cell1.innerHTML = `${album.album_name}`;
-                                    cell2.innerHTML = `${album.album_label}`;
-                                    cell3.innerHTML = `${album.album_release_date}`;
-
-                                    var add_button = document.createElement('button');
-                                    add_button.innerHTML = "Add to Favorires";
-                                    add_button.setAttribute('class', 'add_button');
-                                    add_button.setAttribute('id', `add_button_uid${album.album_id}`);
-                                    add_button.setAttribute('onclick', `addToFavorites(${album.album_id})`);
-                                    
-                                    cell4.appendChild(add_button);
-
-                                    row.appendChild(cell4);
-                                    row.appendChild(cell1);      
-                                    row.appendChild(cell2);
-                                    row.appendChild(cell3);                                                                                            
-
-                                    table.appendChild(row)                                                
-                                }
-                                thisArtistDiv.appendChild(table);
-
-                                // recreate Clicked artist node to remove the 'click' listener
-                                newArtistDiv = thisArtistDiv.cloneNode(true);   
-                                searchResults.replaceChild(newArtistDiv, thisArtistDiv);                                            
-                                //console.log(result)
-                            },
-                            "error":function(xhr, status, error){
-                                console.log("error: "+status+" msg: "+ error);
-                            }
-                        }
-                    )
-                }
- */
-              //  )
-                searchResults.appendChild(div);                            
+                cell2.setAttribute('class', 'artist');
+                cell2.setAttribute('id', `expand${artist.artist_id}`);
+                cell2.innerHTML = "[+]";                
+                cell2.setAttribute('onclick', `open_artist(${artist.artist_id}, '${artist.artist_name}')`);  
+                
+                row.appendChild(cell1)
+                row.appendChild(cell2)
+                table.appendChild(row)                      
             }//end of for artist loop
+            searchResults.appendChild(table);      
 
         },
         "error":function(xhr, status, error){

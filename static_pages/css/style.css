@@ -78,6 +78,12 @@ table.fav_table tr:hover, table.artist_albums_table tr:hover, table.user_tbl tr:
   background-color: #f5f5f5; /* Set the background color of the rows to a light grey when the user hovers over them */
 }
 
+table.artist_table td{
+
+    vertical-align: top; /* Align the items inside the cells with the top of the cells */
+  
+}
+
 
 button{
   width: 150px;
