@@ -1,6 +1,6 @@
 /* Author: Przemyslaw Bil
 g00398317@atu.ie
-CSS file for Index.html */
+CSS file for Index.html
 
 body{
     background-color:lightgrey;
@@ -36,3 +36,89 @@ body{
     color: black;
     background-color: cadetblue;
 }
+*/
+
+/* Reset default margins and padding */
+* {
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Set the font family and size for the entire page */
+  html {
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+  }
+  
+  /* Add some space around the h1 heading */
+  h1 {
+    margin: 20px;
+  }
+  
+  /* Style the buttons */
+  button {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+  }
+  
+  /* Style the forms */
+  form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px;
+  }
+  
+  /* Style the input fields */
+  input {
+    width: 50%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  /* Style the label for the input fields */
+  label {
+    font-size: 18px;
+    margin-bottom: 8px;
+  }
+  
+  /* Style the dialog box */
+  dialog {
+    width: 400px;
+    background-color: white;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    padding: 20px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+  /* Style the "Yes" and "No" buttons in the dialog box */
+  #delete-dialog button {
+    width: 40%;
+    margin: 10px;
+  }
+  
+  /* Style the "Yes" button */
+  #confirm-delete {
+    background-color: #f44336;
+  }
+  
+  /* Style the "No" button */
+  #cancel-delete {
+    background-color: #4CAF50;
+  }
+  
