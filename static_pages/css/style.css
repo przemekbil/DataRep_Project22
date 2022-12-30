@@ -31,6 +31,56 @@ body{
     height: 30px;
 }
 
+/* Style the table that store user profiles */
+table.user_tbl {
+  border-collapse: collapse; /* Remove the space between cells */
+  width: 50%; /* Make the table fill the width of its parent container */
+  margin: 20px 0; /* Add some space above and below the table */
+  /*box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);  Add a subtle shadow to the table */
+}
+
+td.user_tbl_user{
+  width: 75%;
+}
+
+table.user_tbl tr{
+  margin-top: 50px; /* Add some padding to the cells */
+}
+
+/* Style the table that store user favorite albums */
+table.fav_table, table.artist_albums_table {
+  border-collapse: collapse; /* Remove the space between cells */
+  width: 100%; /* Make the table fill the width of its parent container */
+  margin: 20px 0; /* Add some space above and below the table */
+  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23); /* Add a subtle shadow to the table */
+}
+
+/* Style the table cells */
+table.fav_table td, table.fav_table th, table.artist_albums_table td, table.artist_albums_table th {
+  border: 1px solid #ddd; /* Add a border to the cells */
+  padding: 12px; /* Add some padding to the cells */
+  text-align: center; /* Center the text within the cells */
+}
+
+/* Style the table header cells */
+table.fav_table th {
+  background-color: rgb(255,83,83); /* Set the background color of the header cells to the Musixmatch green */
+  color: white; /* Set the text color of the header cells to white */
+}
+
+/* Style the table rows on hover */
+table.fav_table tr:hover, table.artist_albums_table tr:hover, table.user_tbl tr:hover {
+  background-color: #f5f5f5; /* Set the background color of the rows to a light grey when the user hovers over them */
+}
+
+
+button{
+  width: 150px;
+  height: 30px;
+  border-radius: 10px; /* Round the corners of the button */
+  cursor: pointer;  
+}
+
 /*Define the look of user buttons*/
 .user_button{
     width: 150px;
@@ -70,32 +120,55 @@ body{
 .edit_button:hover, .del_button:hover{
   border: 1px solid black;
 }
-
 .del_button:hover{
   background-color: lightcoral;
 }
 
+#toggle_musixmatch_search_button{
+  color: rgb(255,255, 255);
+  background-color: rgb(255,83,83);
+  width: 150px;
+  height: 50px;
+  margin: 20px;
+}  
+  
+}
+
 #delete-dialog{
+  justify-content: center; /* Align the flex items along the horizontal axis */
+  align-items: center; /* Align the flex items along the vertical axis */
   border-radius: 25px;
   background-color: #fcd5d1;
 }
 
 /* Style the "Yes" and "No" buttons in the dialog box */
-#delete-dialog button {  
-  width: 40%;
-  margin: 10px;
+#delete-dialog button{
+  width: 19%;
+  height: 30px;
+  margin-left: 15%;
+  margin-right: 15%;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  font-size: 14px;  
+  border-radius: 5px; 
 }
 
 /* Style the "Yes" button */
-#confirm-delete {
+#confirm-delete{  
   background-color: #f44336;
-  border-radius: 5px; 
+
+}
+#confirm-delete:hover{
+
+  font-weight: 800;
 }
 
 /* Style the "No" button */
-#cancel-delete {
+#cancel-delete{
   background-color: #1DB954;
-  border-radius: 5px; 
+}
+#cancel-delete:hover{
+  font-weight: 800;
 }
 
 /* Add the Musixmatch logo to the page */

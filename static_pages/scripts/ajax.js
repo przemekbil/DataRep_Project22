@@ -130,6 +130,8 @@ function showSelectedUserFavorites(user_id){
                 //table to hold the buttons
                 const table = document.createElement('table');
 
+                table.className = "fav_table";
+
                 const header = document.createElement('tr');
                 const hcell1 = document.createElement('th');
                 const hcell2 = document.createElement('th');
@@ -165,7 +167,7 @@ function showSelectedUserFavorites(user_id){
                     cell4.innerHTML = fav.album_release_date;
 
                     var del_button = document.createElement('button');
-                    del_button.innerHTML = "Remove form Favorites";
+                    del_button.innerHTML = "Remove";
                     del_button.setAttribute('class', 'del_button');
                     del_button.setAttribute('id', `del_button_uid${fav.id}`);
                     del_button.setAttribute('onclick', `removeFavorite(${fav.id})`);
@@ -240,6 +242,8 @@ function runOnLoad(){
                 //table to hold the buttons
                 const table = document.createElement('table');
 
+                table.className = "user_tbl";
+
                 for (const user of result){
                     // Define table with user selection, edit and delete buttons
                     const row = document.createElement('tr');
@@ -255,6 +259,7 @@ function runOnLoad(){
                     user_button.setAttribute('onclick', `selectProfile(${user.user_id}, "${user.name}")`);
 
                     cell1.appendChild(user_button);
+                    cell1.className= "user_tbl_user"
 
                     var edit_button = document.createElement('button');
                     edit_button.innerHTML = "Edit";
@@ -263,6 +268,7 @@ function runOnLoad(){
                     edit_button.setAttribute('onclick', `editProfile(${user.user_id}, "${user.name}")`);  
                     
                     cell2.appendChild(edit_button);
+                    cell2.className= "user_tbl_edit"
 
                     var del_button = document.createElement('button');
                     del_button.innerHTML = "Delete";
@@ -270,7 +276,8 @@ function runOnLoad(){
                     del_button.setAttribute('id', `del_button_uid${user.user_id}`);
                     del_button.setAttribute('onclick', `deleteProfile(${user.user_id}, "${user.name}")`);
                     
-                    cell3.appendChild(del_button);                                
+                    cell3.appendChild(del_button);   
+                    cell3.className= "user_tbl_del"                             
 
                     row.appendChild(cell1);
                     row.appendChild(cell2);
@@ -403,6 +410,8 @@ form.addEventListener('submit', function(event){
                                 thisArtistDiv.setAttribute('class', 'artist_opened');
                                 
                                 const table = document.createElement('table');
+
+                                table.className = "artist_albums_table";
 
                                 for (const album of result2){
                                     const row = document.createElement('tr');
