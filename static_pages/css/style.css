@@ -10,10 +10,12 @@ body{
 
 .artist{
     color: blue;
+    cursor: pointer;
 }
 
 .artist_opened{
     color:blueviolet;
+    cursor: pointer;
 }
 
 .album{
@@ -21,7 +23,7 @@ body{
     margin-left: 30px;
 }
 
-.artist:hover{
+.artist_opened:hover .artist:hover {
     text-decoration: underline;
     cursor: pointer;
 }
@@ -33,19 +35,22 @@ body{
 
 /* Style the table that store user profiles */
 table.user_tbl {
-  border-collapse: collapse; /* Remove the space between cells */
-  width: 50%; /* Make the table fill the width of its parent container */
+  border-collapse: collapse; /* Don't collapse the borders of adjacent cells */
+  /*border-spacing: 10px; /* Add 10px of space between the borders of adjacent cells */  
+  width: 25%; /* Make the table fill the 1/4 of its parent container */
   margin: 20px 0; /* Add some space above and below the table */
-  /*box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);  Add a subtle shadow to the table */
+  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);  /*Add a subtle shadow to the table */
+}
+
+table.user_tbl td{
+  padding: 12px; /* Add some padding to the cells */
+  text-align: center; /* Center the text within the cells */
 }
 
 td.user_tbl_user{
   width: 75%;
 }
 
-table.user_tbl tr{
-  margin-top: 50px; /* Add some padding to the cells */
-}
 
 /* Style the table that store user favorite albums */
 table.fav_table, table.artist_albums_table {
@@ -56,7 +61,7 @@ table.fav_table, table.artist_albums_table {
 }
 
 /* Style the table cells */
-table.fav_table td, table.fav_table th, table.artist_albums_table td, table.artist_albums_table th {
+table.fav_table td, table.fav_table th, table.artist_albums_table td{
   border: 1px solid #ddd; /* Add a border to the cells */
   padding: 12px; /* Add some padding to the cells */
   text-align: center; /* Center the text within the cells */

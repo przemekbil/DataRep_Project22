@@ -10,6 +10,7 @@ function showMusicSearch(){
         document.getElementById("music_search").style.display = "none";  
         document.getElementById("search_results").style.display = "none";
         document.getElementById("toggle_musixmatch_search_button").innerHTML = "Add New favorite Albums"
+        document.getElementById('search_results').innerHTML = ''
     }else{                
         document.getElementById("music_search").style.display = "inline";  
         document.getElementById("search_results").style.display = "inline";
@@ -220,7 +221,8 @@ function removeFavorite(fav_id){
 // Function onLoad() to be run at the start of the page
 function runOnLoad(){
     document.getElementById("music_search").style.display = "none";  
-    document.getElementById("toggle_musixmatch_search_button").innerHTML = "Add New favorite Albums"        
+    document.getElementById("toggle_musixmatch_search_button").innerHTML = "Add New favorite Albums";
+    document.getElementById('search_results').innerHTML = '';     
     document.getElementById("registered_users").style.display = "inline";
     document.getElementById("add_profile").style.display = "none";
     document.getElementById("search_results").style.display = "none";
@@ -371,6 +373,84 @@ formAdd.addEventListener('submit', function(event) {
 }
 )//end of formAdd.addEventListener
 
+
+// Clear the table with artist albums
+function close_artist(artist_id, artist_name){
+    var artistDiv = document.getElementById(artist_id);
+
+    artistDiv.setAttribute('class', 'artist');
+    artistDiv.innerHTML = artist_name + "[+]";
+    artistDiv.setAttribute('onclick', `open_artist(${artist_id}, '${artist_name}')`);
+}
+
+// Populate the table with artist albums
+function open_artist(artist_id, artist_name){
+
+    var thisArtistDiv = document.getElementById(artist_id)
+
+    $.ajax(
+        {
+            "url":`api/mm/show.artist.albums/${artist_id}`,
+            "method":"GET",
+            "data":"",
+            "dataType": "JSON",
+            "contentType": "application/json; charset=utf-8",
+            "success":function(result2){
+
+                
+                //reset parent artist div to prevent albums being added multiple times
+                thisArtistDiv.innerHTML=artist_name + "[-]";
+                thisArtistDiv.setAttribute('class', 'artist_opened');
+                thisArtistDiv.setAttribute('onclick', `close_artist(${artist_id}, '${artist_name}')`);
+                
+                const table = document.createElement('table');
+
+                table.className = "artist_albums_table";
+
+                for (const album of result2){
+                    const row = document.createElement('tr');
+                    const cell1 = document.createElement('td');
+                    const cell2 = document.createElement('td');
+                    const cell3 = document.createElement('td');
+                    const cell4 = document.createElement('td');                                                
+
+                    //var album_div = document.createElement('div');
+                    row.setAttribute('class', 'album');
+                    row.setAttribute('id', album.album_id);
+
+                    cell1.innerHTML = `${album.album_name}`;
+                    cell2.innerHTML = `${album.album_label}`;
+                    cell3.innerHTML = `${album.album_release_date}`;
+
+                    var add_button = document.createElement('button');
+                    add_button.innerHTML = "Add to Favorires";
+                    add_button.setAttribute('class', 'add_button');
+                    add_button.setAttribute('id', `add_button_uid${album.album_id}`);
+                    add_button.setAttribute('onclick', `addToFavorites(${album.album_id})`);
+                    
+                    cell4.appendChild(add_button);
+
+                    row.appendChild(cell4);
+                    row.appendChild(cell1);      
+                    row.appendChild(cell2);
+                    row.appendChild(cell3);                                                                                            
+
+                    table.appendChild(row)                                                
+                }
+                thisArtistDiv.appendChild(table);
+
+                // recreate Clicked artist node to remove the 'click' listener
+                //newArtistDiv = thisArtistDiv.cloneNode(true);   
+                //searchResults.replaceChild(newArtistDiv, thisArtistDiv);                                            
+                //console.log(result)
+            },
+            "error":function(xhr, status, error){
+                console.log("error: "+status+" msg: "+ error);
+            }
+        }
+    )    
+}
+
 // Search for artists
 const form = document.getElementById('search_artist');
 form.addEventListener('submit', function(event){
@@ -393,8 +473,9 @@ form.addEventListener('submit', function(event){
                 var div = document.createElement('div');
                 div.setAttribute('class', 'artist');
                 div.setAttribute('id', artist.artist_id);
-                div.innerHTML = artist.artist_name;
-                div.addEventListener('click', function(event){
+                div.innerHTML = artist.artist_name + "[+]";
+                div.setAttribute('onclick', `close_artist(${artist.artist_id}, '${artist.artist_name}')`);
+                /* div.addEventListener('click', function(event){
                     $.ajax(
                         {
                             "url":`api/mm/show.artist.albums/${artist.artist_id}`,
@@ -408,6 +489,8 @@ form.addEventListener('submit', function(event){
                                 //reset parent artist div to prevent albums being added multiple times
                                 thisArtistDiv.innerHTML=artist.artist_name;
                                 thisArtistDiv.setAttribute('class', 'artist_opened');
+
+                                thisArtistDiv.setAttribute('onclick', `close_artist(${artist.artist_id}, '${artist.artist_name}')`);
                                 
                                 const table = document.createElement('table');
 
@@ -456,8 +539,8 @@ form.addEventListener('submit', function(event){
                         }
                     )
                 }
-
-                )
+ */
+              //  )
                 searchResults.appendChild(div);                            
             }//end of for artist loop
 
